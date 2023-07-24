@@ -8,21 +8,30 @@ func getMainMenuKeyboard() tgbotapi.ReplyKeyboardMarkup {
 		Keyboard: [][]tgbotapi.KeyboardButton{
 			{
 				tgbotapi.NewKeyboardButton("Add Transfer"),
-				tgbotapi.NewKeyboardButton("Add Crypto"),
-				tgbotapi.NewKeyboardButton("My Wallet"),
+				tgbotapi.NewKeyboardButton("Add to track crypto"),
+				tgbotapi.NewKeyboardButton("My tracking coins"),
 			},
 		},
 	}
 }
 
-func getTransferMenuKeyboard() tgbotapi.ReplyKeyboardMarkup {
+func getAvailablePairs() []string {
+	// Вернуть список доступных пар, например ["BTC/USD", "ETH/USD", "XRP/USD", ...]
+	// Здесь вы можете получить доступные пары из вашего источника данных (например, базы данных или API)
+	return []string{"BTC/USD", "ETH/USD", "XRP/USD", "LTC/USD", "BCH/USD", "XLM/USD", "ADA/USD", "LINK/USD"}
+}
+
+func getAvailableCoinsKeyboard() tgbotapi.ReplyKeyboardMarkup {
+	availablePairs := getAvailablePairs()
+	keyboard := make([][]tgbotapi.KeyboardButton, len(availablePairs))
+	for i, pair := range availablePairs {
+		btn := tgbotapi.NewKeyboardButton(pair)
+
+		keyboard[i] = []tgbotapi.KeyboardButton{btn}
+	}
+
 	return tgbotapi.ReplyKeyboardMarkup{
 		ResizeKeyboard: true,
-		Keyboard: [][]tgbotapi.KeyboardButton{
-			{
-				tgbotapi.NewKeyboardButton("Sell"),
-				tgbotapi.NewKeyboardButton("Buy"),
-			},
-		},
+		Keyboard:       keyboard,
 	}
 }

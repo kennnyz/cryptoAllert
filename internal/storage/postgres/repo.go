@@ -13,7 +13,7 @@ func NewTelegramDB(db *sql.DB) *TelegramDB {
 	return &TelegramDB{db: db}
 }
 
-func (t *TelegramDB) AddUser(chatId int) error {
+func (t *TelegramDB) AddUser(chatId int64) error {
 	_, err := t.db.Exec("INSERT INTO users (id) VALUES ($1)", chatId)
 	if err != nil {
 		return err
@@ -40,7 +40,7 @@ func (t *TelegramDB) AddCoin(coin models.UserCoin) error {
 	return nil
 }
 
-func (t *TelegramDB) GetWallet(userID int) ([]models.UserCoin, error) {
+func (t *TelegramDB) GetWallet(userID int64) ([]models.UserCoin, error) {
 	rows, err := t.db.Query("SELECT name, user_id, amount, usd_amount FROM user_coins WHERE user_id = $1", userID)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (t *TelegramDB) GetWallet(userID int) ([]models.UserCoin, error) {
 
 	for rows.Next() {
 		var name string
-		var userID int
+		var userID int64
 		var amount float64
 		var usdAmount float64
 
