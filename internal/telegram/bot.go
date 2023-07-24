@@ -14,31 +14,31 @@ type Repository interface {
 }
 
 type Bot struct {
-	bot        *tgbotapi.BotAPI
-	update     tgbotapi.Update
-	repository Repository
+	bot         *tgbotapi.BotAPI
+	updatesChan tgbotapi.UpdatesChannel
+	repository  Repository
 }
 
 func NewBot(bot *tgbotapi.BotAPI, repository Repository) *Bot {
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+	updates := bot.GetUpdatesChan(u)
+
 	return &Bot{
-		bot:        bot,
-		repository: repository,
+		bot:         bot,
+		updatesChan: updates,
+		repository:  repository,
 	}
 }
 
 func (b *Bot) Start() {
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates := b.bot.GetUpdatesChan(u)
-
-	for update := range updates {
+	for update := range b.updatesChan {
 		if update.Message == nil {
 			continue
 		}
 		// handle commands
 		if update.Message.IsCommand() {
-			b.HandleCommand(update.Message)
+			b.HandleCommand(update)
 			continue
 		}
 
