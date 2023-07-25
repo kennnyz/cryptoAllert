@@ -3,12 +3,10 @@ package telegram
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/kennnyz/cryptoAllert/internal/models"
-	"log"
 )
 
 type Repository interface {
 	AddUser(chatId int64) error
-	AddTransfer(transfer models.Transfer) error
 	AddCoin(coin models.UserCoin) error
 	GetWallet(userID int64) ([]models.UserCoin, error)
 }
@@ -42,16 +40,8 @@ func (b *Bot) Start() {
 			continue
 		}
 
-		// adding new user
-		if update.Message.NewChatMembers != nil {
-			for _, newUser := range update.Message.NewChatMembers {
-				chatID := newUser.ID
-				err := b.repository.AddUser(chatID)
-				if err != nil {
-					log.Println(err)
-					break
-				}
-			}
+		if update.Message.Text == "Add to track crypto" {
+			b.handleAddCoinToTrack(update)
 		}
 	}
 }

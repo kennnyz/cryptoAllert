@@ -21,27 +21,17 @@ func (t *TelegramDB) AddUser(chatId int64) error {
 	return nil
 }
 
-func (t *TelegramDB) AddTransfer(transfer models.Transfer) error {
-	query := `INSERT INTO transfers (type, amount, price, user_id) VALUES ($1, $2, $3, $4)`
-	_, err := t.db.Exec(query, transfer.ActionType, transfer.Amount, transfer.Price, transfer.UserID)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (t *TelegramDB) AddCoin(coin models.UserCoin) error {
 	query := `INSERT INTO user_coins (name, user_id) VALUES ($1, $2)`
 	_, err := t.db.Exec(query, coin.Name, coin.UserID)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
 func (t *TelegramDB) GetWallet(userID int64) ([]models.UserCoin, error) {
-	rows, err := t.db.Query("SELECT name, user_id, amount, usd_amount FROM user_coins WHERE user_id = $1", userID)
+	rows, err := t.db.Query("SELECT name, user_id FROM user_coins WHERE user_id = $1", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -52,19 +42,15 @@ func (t *TelegramDB) GetWallet(userID int64) ([]models.UserCoin, error) {
 	for rows.Next() {
 		var name string
 		var userID int64
-		var amount float64
-		var usdAmount float64
 
-		err := rows.Scan(&name, &userID, &amount, &usdAmount)
+		err := rows.Scan(&name, &userID)
 		if err != nil {
 			return nil, err
 		}
 
 		userCoin := models.UserCoin{
-			Name:      name,
-			UserID:    userID,
-			Amount:    amount,
-			USDAmount: usdAmount,
+			Name:   name,
+			UserID: userID,
 		}
 
 		userCoins = append(userCoins, userCoin)
