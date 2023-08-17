@@ -9,7 +9,7 @@ import (
 )
 
 func Run() {
-	tBot, err := tgbotapi.NewBotAPI("env")
+	tBot, err := tgbotapi.NewBotAPI("6262902974:AAEAP9ZrTpVlKJtt9iZbzq9ArW2SPRN4R_w")
 	if err != nil {
 		log.Println(err)
 		return

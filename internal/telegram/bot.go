@@ -45,3 +45,21 @@ func (b *Bot) Start() {
 		}
 	}
 }
+
+func (b *Bot) handleMessage(update tgbotapi.Update) {
+	switch update.Message.Text {
+	case "Add to track crypto":
+		b.handleAddCoinToTrack(update)
+	case "My tracking coins":
+		b.handleMyTracks(update)
+	case "":
+	default:
+		availablePairs := getAvailablePairs()
+		for _, pair := range availablePairs {
+			if update.Message.Text == pair {
+				b.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "ADDCOIN "+pair))
+				return
+			}
+		}
+	}
+}

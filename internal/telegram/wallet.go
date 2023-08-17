@@ -16,7 +16,7 @@ func (b *Bot) handleMyTracks(update tgbotapi.Update) {
 
 	s := strings.Builder{}
 	for i, coin := range coins {
-		s.WriteString(fmt.Sprintf("%d. %s", i+1, coin.Name))
+		s.WriteString(fmt.Sprintf("%d. %s\n", i+1, coin.Name))
 	}
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, s.String())
 

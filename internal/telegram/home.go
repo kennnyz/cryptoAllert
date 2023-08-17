@@ -26,6 +26,7 @@ func (b *Bot) HandleCommand(update tgbotapi.Update) {
 		// TODO handle price of user coins
 	default:
 		msg.Text = "Unknown command. Use /help to see available commands."
+		log.Println(update.Message.Text)
 	}
 	b.bot.Send(msg)
 }
